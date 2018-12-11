@@ -1,4 +1,4 @@
-import { updateTensor, updateW, updateQuaternion } from "../Physics/RungyKutta/RungyKutta";
+
 
 let n = 100,
     speed = 1,
@@ -12,22 +12,17 @@ let n = 100,
 
 export function _setN(newValue) {
     n = TryParseInt(newValue, n);
-    updateTensor();
 }
 export function _setSpeed(newValue) {
     speed = TryParseInt(newValue, speed);
-    updateW(speed);
 }
 export function _setDisplacement(newValue) {
-    if(!isNaN(newValue) && newValue.toString().indexOf('.') != -1)
-    {
+    if(!isNaN(newValue) && newValue.toString().indexOf('.') !== -1) {
         displacement = newValue;
     }
-    updateQuaternion(displacement);
 }
 export function _setDensity(newValue) {
     density = TryParseInt(newValue, density);
-    updateTensor();
 }
 export function _setSize(newValue) {
     cubeSize = TryParseInt(newValue, cubeSize);
