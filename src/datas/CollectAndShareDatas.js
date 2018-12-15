@@ -1,79 +1,24 @@
+import { TryParseFloat } from "../Helpers/Parsers";
 
+let l1 = 100,
+    l2 = 100,
+    edit = false;
 
-let n = 100,
-    speed = 1,
-    displacement = 1,
-    density = 1,
-    cubeSize = 1,
-    gravitation = false,
-    trayectory = false,
-    seendCube = true,
-    seenDiagonal = false;
-
-export function _setN(newValue) {
-    n = TryParseInt(newValue, n);
+export function setMode() {
+    edit = !edit;
 }
-export function _setSpeed(newValue) {
-    speed = TryParseInt(newValue, speed);
+export function getMode() {
+    return edit;
 }
-export function _setDisplacement(newValue) {
-    if(!isNaN(newValue) && newValue.toString().indexOf('.') !== -1) {
-        displacement = newValue;
-    }
+export function setL1(_l1) {
+    l1 = TryParseFloat(_l1, l1);
 }
-export function _setDensity(newValue) {
-    density = TryParseInt(newValue, density);
+export function setL2(_l2) {
+    l2 = TryParseFloat(_l2, l2);
 }
-export function _setSize(newValue) {
-    cubeSize = TryParseInt(newValue, cubeSize);
+export function getL1() {
+    return l1;
 }
-export function _seenGravitation() {
-    gravitation = !gravitation;
-}
-export function _seenTrayectory() {
-    trayectory = !trayectory;
-}
-export function _seenCube() {
-    seendCube = !seendCube;
-}
-export function _seenDagonal() {
-    seenDiagonal = !seenDiagonal;
-}
-export function _getN() {
-    return n ? n : 1;
-}
-export function _getSpeed() {
-    return displacement ? speed : 0;
-}
-export function _getDisplacement() {
-    return displacement ? displacement : 1;
-}
-export function _getDensity() {
-    return density ? density: 1;
-}
-export function _getSize() {
-    return cubeSize ? cubeSize : 1;
-}
-export function _getGravitation() {
-    return  gravitation ? gravitation : false;
-}
-export function _getTrayectory() {
-    return trayectory ? trayectory : false;
-}
-export function _getCubeSeen() {
-    return seendCube ? seendCube : true;
-}
-export function _getDagonalSeen() {
-    return seenDiagonal ? seenDiagonal : false;
-}
-export function TryParseInt(str ,defaultValue) {
-    let retValue = defaultValue;
-    if(str !== null) {
-        if(str.length > 0) {
-            if (!isNaN(str)) {
-                retValue = parseInt(str, 10);
-            }
-        }
-    }
-    return retValue;
+export function getL2() {
+    return l2;
 }
