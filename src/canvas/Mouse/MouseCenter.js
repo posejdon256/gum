@@ -2,6 +2,7 @@ import { getCanvas } from "../CanvasData";
 import { setLines } from "../Lines/Lines";
 import { getMode } from "../../datas/CollectAndShareDatas";
 import { Draw } from "../Draw";
+import { addRectangle } from "../Rectangles/Rectangle";
 
 let startX;
 let startY;
@@ -20,6 +21,8 @@ export function mouseUp(event) {
 
     if(!getMode()) {
         setLines(endX - 700, endY - 455);
+    } else {
+        addRectangle(startX - 700, startY - 455, endX - 700, endY - 455);
     }
     Draw();
 }
