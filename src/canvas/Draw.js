@@ -1,7 +1,7 @@
-import { getContext, getCanvas } from "./CanvasData";
-import { getLines, getLinesPrev } from "./Lines/Lines";
-import { getrectangles } from "./Rectangles/Rectangle";
-import { isIntersection } from "../Intersection/Intersect";
+import { getSelect1, getSelect2 } from '../datas/CollectAndShareDatas';
+import { getCanvas, getContext } from './CanvasData';
+import { getLines, getLinesPrev } from './Lines/Lines';
+import { getrectangles } from './Rectangles/Rectangle';
 
 let startX = 700;
 let startY = 455;
@@ -15,59 +15,45 @@ export function Draw() {
     DrawLines();
 }
 function DrawLines() {
-    const ctx = getContext();
-    const lines = getLines();
+
+    const lines = getLines();  
+    const prev = getLinesPrev();
+
+    //prev
+    if(getSelect1()) {
+        DrawLine("#d6c4ff", startX, startY, startX + prev[0].x1, startY + prev[0].y1);
+        DrawLine("#d6c4ff", startX + prev[0].x1, startY + prev[0].y1, startX + prev[1].x, startY + prev[1].y);
+        DrawCircle("#d6c4ff", startX + prev[0].x1, startY + prev[0].y1);
+    }
+
+    DrawCircle("#d6c4ff", startX, startY);
+    DrawCircle("#d6c4ff", startX + prev[1].x, startY + prev[1].y);
+    
+
+    if(!getSelect1()) {
+        DrawLine("#d6c4ff", startX, startY, startX + prev[0].x2, startY + prev[0].y2);
+        DrawLine("#d6c4ff", startX + prev[0].x2, startY + prev[0].y2, startX + prev[1].x, startY + prev[1].y);
+        DrawCircle("#d6c4ff", startX + prev[0].x2, startY + prev[0].y2);
+    }
 
     //line1
-    ctx.strokeStyle = "#3700B3";
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    ctx.lineTo(startX + lines[0].x1, startY + lines[0].y1);
-    ctx.lineTo(startX + lines[1].x, startY + lines[1].y);
-    ctx.stroke();
+    if(getSelect2()) {
+        DrawLine("#3700B3", startX, startY, startX + lines[0].x1, startY + lines[0].y1);
+        DrawLine("#3700B3", startX + lines[0].x1, startY + lines[0].y1, startX + lines[1].x, startY + lines[1].y);
+
+        DrawCircle("#3700B3", startX, startY);
+        DrawCircle("#3700B3", startX + lines[0].x1, startY + lines[0].y1);
+        DrawCircle("#3700B3", startX + lines[1].x,startY + lines[1].y);
+    }
 
     //line2
-    ctx.strokeStyle = "#03DAC6";
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    ctx.lineTo(startX + lines[0].x2, startY + lines[0].y2);
-    ctx.lineTo(startX + lines[1].x, startY + lines[1].y);
-    ctx.stroke();
+    if(!getSelect2()) {
+        DrawLine("#03DAC6", startX, startY, startX + lines[0].x2, startY + lines[0].y2);
+        DrawLine("#03DAC6", startX + lines[0].x2, startY + lines[0].y2, startX + lines[1].x, startY + lines[1].y);
 
-    //#4f00ff
-    //#2dfce9
-    const prev = getLinesPrev();
-    ctx.strokeStyle = "#d6c4ff";
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    ctx.lineTo(startX + prev[0].x1, startY + prev[0].y1);
-    ctx.lineTo(startX + prev[1].x, startY + prev[1].y);
-    ctx.stroke();
-
-    //line2
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    ctx.lineTo(startX + prev[0].x2, startY + prev[0].y2);
-    ctx.lineTo(startX + prev[1].x, startY + prev[1].y);
-    ctx.stroke();
-
-    const inters = isIntersection(lines, getrectangles());
-
-    for(let i = 0; i < inters.length; i ++) {
-        if(inters[i] === false) {
-            continue;
-        }
-        ctx.strokeStyle = "#B00020";
-        ctx.beginPath();
-        ctx.moveTo(startX + inters[i].l.x1, startY + inters[i].l.y1);
-        ctx.lineTo(startX + inters[i].l.x2, startY + inters[i].l.y2);
-        ctx.stroke();
-
-        ctx.strokeStyle = "#B00020";
-        ctx.beginPath();
-        ctx.moveTo(startX + inters[i].r.x1, startY + inters[i].r.y1);
-        ctx.lineTo(startX + inters[i].r.x2, startY + inters[i].r.y2);
-        ctx.stroke();
+        DrawCircle("#03DAC6", startX, startY);
+        DrawCircle("#03DAC6", startX + lines[0].x2, startY + lines[0].y2,);
+        DrawCircle("#03DAC6", startX + lines[1].x, startY + lines[1].y);
     }
 
 }
@@ -78,4 +64,21 @@ function DrawRectangles() {
     for(let i = 0; i < rects.length; i ++) {
         ctx.fillRect(startX + rects[i].x1, startY + rects[i].y1, rects[i].x2 - rects[i].x1, rects[i].y2 - rects[i].y1);
     }
+}
+function DrawLine(color, x1, y1, x2, y2) {
+    const ctx = getContext();
+
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+}
+function DrawCircle(color, x, y) {
+    const ctx = getContext();
+    
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+    ctx.fill();
 }

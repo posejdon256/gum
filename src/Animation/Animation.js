@@ -1,22 +1,29 @@
 import { Draw } from '../canvas/Draw';
-import { convertAngleToLine, getLines, getLinesPrev, setLines } from '../canvas/Lines/Lines';
+import { convertAngleToLine, getLines, getLinesPrev, setLines, linesFromAngles, updateLinePrev } from '../canvas/Lines/Lines';
 import { getrectangles } from '../canvas/Rectangles/Rectangle';
-import { getL1, getL2 } from '../datas/CollectAndShareDatas';
+import { getL1, getL2, getSelect1, getSelect2 } from '../datas/CollectAndShareDatas';
 import { ifTwolinesIntersectRectangles } from '../Intersection/Intersect';
-import { updateCanvas } from '../navbar/FloodFillCanvas';
+import { updateCanvas, putWayOnCanvas, drawStartAndEnd, colorPixel } from '../navbar/FloodFillCanvas';
 
 let configuaration;
 let visited;
 let interId;
 let animationSteps;
 let step;
-export function startAnimation() {
+let animationRun = false;
+let callError;
+
+export function startAnimation(_callError) {
+    callError = _callError;
     configuaration = Array(360).fill().map(() => Array(360).fill(0));
     visited = Array(360).fill().map(() => Array(360).fill(false));
     fillArray();
     animationSteps = findPath();
     step = 0;
     interId = setInterval(animationStep, 10);
+}
+export function getAnimationRun() {
+    return animationRun;
 }
 function fillArray() {
     const rectangles = getrectangles();
@@ -39,34 +46,60 @@ function fillArray() {
 }
 function findPath() {
     const linesPrev = getLinesPrev();
-    let startX = linesPrev[0].angle1;
-    let startY = linesPrev[1].angle1;
+    const lines = getLines();
+    const startX = getSelect1() ? linesPrev[0].angle1 : linesPrev[0].angle2;
+    const startY = getSelect1() ? linesPrev[1].angle1 : linesPrev[1].angle2;
 
-    return floodFill(startX, startY);
+    const endX = getSelect2() ? lines[0].angle1 : lines[0].angle2;
+    const endY = getSelect2() ? lines[1].angle1 : lines[1].angle2;
+    if(isNaN(startX) || isNaN(startY) || isNaN(endX) || isNaN(endY)) {
+        callError("You put a point in a wrong place");
+        return false;
+    }
+
+    const flood = floodFill(startX, startY);
+    if(!flood) {
+        callError("There is no possible way");
+    } else {
+        callError("No error");
+    }
+    drawStartAndEnd({x: startX, y: startY}, {x: endX, y: endY});
+    return flood;
 }
 function floodFill(x, y) {
     const lines = getLines();
-    const stack = [{x: x, y: y}];
+    const stack = [{x: x, y: y, deep: 0}];
     let current; 
+    const endX = getSelect2() ? lines[0].angle1 : lines[0].angle2;
+    const endY = getSelect2() ? lines[1].angle1 : lines[1].angle2;
     while(stack.length !== 0) {
         current = stack.shift();
-        if(current.x === lines[0].angle1 && current.y === lines[1].angle1) {
+        if(current.x === endX && current.y === endY) {
            break;
         }
-        if(current.x < 0 || current.x >= 360 || current.y < 0 || current.y >= 360) {
-            continue;
+        if(current.x >= 360) {
+            current.x = 0;
+        } else if(current.x < 0) {
+            current.x = 359;
+        } else if(current.y >= 360) {
+            current.y = 0;
+        } else if(current.y < 0) {
+            current.y = 359;
         }
         if(visited[current.x][current.y] === true) {
+            current = undefined;
             continue;
         }
         visited[current.x][current.y] = true;
         if(configuaration[current.x][current.y] === false) {
+            current = undefined;
             continue;
         }
-        stack.push({x: current.x - 1, y: current.y, prev: current});
-        stack.push({x: current.x, y: current.y - 1, prev: current});
-        stack.push({x: current.x + 1, y: current.y, prev: current});
-        stack.push({x: current.x, y: current.y + 1, prev: current});
+        colorPixel(current, current.deep);
+        stack.push({x: current.x - 1, y: current.y, prev: current, deep: current.deep + 1});
+        stack.push({x: current.x, y: current.y - 1, prev: current, deep: current.deep + 1});
+        stack.push({x: current.x + 1, y: current.y, prev: current, deep: current.deep + 1});
+        stack.push({x: current.x, y: current.y + 1, prev: current, deep: current.deep + 1});
         current = undefined;
     }
     if(current) {
@@ -77,24 +110,21 @@ function floodFill(x, y) {
             ret.push({x: _current.x, y: _current.y});
             _current = _current.prev;
         }
-        return ret.reverse();
+        putWayOnCanvas(ret);
+        return ret;
     }
     return false;
 }
 function animationStep() {
     if(!animationSteps || step >= animationSteps.length) {
         clearInterval(interId);
+        animationRun = false;
         return;
     }
-    const len1 = getL1();
-    const len2 = getL2();
-
-    const p1 = {x: 0, y: 0};
-    const l1 = convertAngleToLine(animationSteps[step].x, p1, len1);
-    const p2 = {x: l1.x2, y: l1.y2};
-    const l2 = convertAngleToLine(animationSteps[step].y, p2, len2);
-    const p3 = {x: l2.x2, y: l2.y2};
-    setLines(parseInt(p3.x, 10), parseInt(p3.y, 10));
+    linesFromAngles(animationSteps[step].x, animationSteps[step].y);
     Draw();
+    if(step === 0) {
+        animationRun = true;
+    }
     step ++;
 }

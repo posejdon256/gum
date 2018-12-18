@@ -45,6 +45,9 @@ export function ifTwolinesIntersectRectangles(lines, rects) {
                     return true;
                 }
             }
+            if(isInside(lines[k], rect)) {
+                return true;
+            }
         }
     }
     return false;
@@ -59,4 +62,11 @@ export function intersect(l, r) {
 }
 function ccw (A, B, C) {
     return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
+}
+function isInside(l, r) {
+    if(l.x1 >= r.x1 && l.x1 <= r.x2 && l.y1 >= r.y1 && l.y1 <= r.y2
+        && l.x2 >= r.x1 && l.x2 <= r.x2 && l.y2 >= r.y1 && l.y2 <= r.y2) {
+        return true;
+    }
+    return false;
 }

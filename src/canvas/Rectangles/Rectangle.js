@@ -1,7 +1,13 @@
-const rectangles = [
+import { Draw } from "../Draw";
+
+let rectangles = [
 ];
 export function getrectangles() {
     return rectangles;
+}
+export function removeAllRectangles() {
+    rectangles = [];
+    Draw();
 }
 export function addRectangle(x1, y1, x2, y2) {
     if (x1 === x2 || y1 === y2) {
