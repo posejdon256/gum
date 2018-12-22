@@ -1,84 +1,87 @@
-import { updateTensor, updateW, updateQuaternion } from "../Physics/RungyKutta/RungyKutta";
+import { TryParseFloat } from "../Helpers/Parsing";
 
-let n = 100,
-    speed = 1,
-    displacement = 1,
-    density = 1,
-    cubeSize = 1,
-    gravitation = false,
-    trayectory = false,
-    seendCube = true,
-    seenDiagonal = false;
+let ShowControlPoints= true,
+    ShowFrame= true,
+    ShowCuboid= true,
+    ShowBezierCube= true,
+    ShowSolid= false,
+    rotateFrame= false,
+    velocityStart= 0,
+    mass= 64,
+    elasticity= 1,
+    elasticity2= 1,
+    vibrationDamping= 1,
+    perturbation= 1;
 
-export function _setN(newValue) {
-    n = TryParseInt(newValue, n);
-    updateTensor();
+export function setShowControlPoints() {
+    ShowControlPoints = !ShowControlPoints;
 }
-export function _setSpeed(newValue) {
-    speed = TryParseInt(newValue, speed);
-    updateW(speed);
+export function getShowControlPoints() {
+    return ShowControlPoints;
 }
-export function _setDisplacement(newValue) {
-    if(!isNaN(newValue) && newValue.toString().indexOf('.') != -1)
-    {
-        displacement = newValue;
-    }
-    updateQuaternion(displacement);
+export function setShowFrame() {
+    ShowFrame = !ShowFrame;
 }
-export function _setDensity(newValue) {
-    density = TryParseInt(newValue, density);
-    updateTensor();
+export function getShowFrame() {
+    return ShowFrame;
 }
-export function _setSize(newValue) {
-    cubeSize = TryParseInt(newValue, cubeSize);
+export function setShowCuboid() {
+    ShowCuboid = !ShowCuboid;
 }
-export function _seenGravitation() {
-    gravitation = !gravitation;
+export function getShowCuboid() {
+    return ShowCuboid;
 }
-export function _seenTrayectory() {
-    trayectory = !trayectory;
+export function setShowBezierCube() {
+    ShowBezierCube = !ShowBezierCube;
 }
-export function _seenCube() {
-    seendCube = !seendCube;
+export function getShowBezierBube() {
+    return ShowBezierCube;
 }
-export function _seenDagonal() {
-    seenDiagonal = !seenDiagonal;
+export function setShowSolid() {
+    ShowSolid = !ShowSolid;
 }
-export function _getN() {
-    return n ? n : 1;
+export function getShowSolid() {
+    return ShowSolid;
 }
-export function _getSpeed() {
-    return displacement ? speed : 0;
+export function setRotateFrame() {
+    rotateFrame = !rotateFrame;
 }
-export function _getDisplacement() {
-    return displacement ? displacement : 1;
+export function getRotationFrame() {
+    return rotateFrame;
 }
-export function _getDensity() {
-    return density ? density: 1;
+export function setVelocityStart(_value) {
+    velocityStart = TryParseFloat(_value, velocityStart);
 }
-export function _getSize() {
-    return cubeSize ? cubeSize : 1;
+export function getVelocityStart() {
+    return velocityStart;
 }
-export function _getGravitation() {
-    return  gravitation ? gravitation : false;
+export function setMass(_value) {
+    mass = TryParseFloat(_value, mass);
 }
-export function _getTrayectory() {
-    return trayectory ? trayectory : false;
+export function getMass() {
+    return mass;
 }
-export function _getCubeSeen() {
-    return seendCube ? seendCube : true;
+export function setElasticity(_value) {
+    elasticity = TryParseFloat(_value, elasticity);
 }
-export function _getDagonalSeen() {
-    return seenDiagonal ? seenDiagonal : false;
+export function getElastity() {
+    return elasticity;
 }
-export function TryParseInt(str ,defaultValue) {
-    let retValue = defaultValue;
-    if(str !== null) {
-        if(str.length > 0) {
-            if (!isNaN(str)) {
-                retValue = parseInt(str, 10);
-            }
-        }
-    }
-    return retValue;
+export function setElasticity2(_value) {
+    elasticity2 = TryParseFloat(_value, elasticity2);
+}
+export function getElastity2() {
+    return elasticity2;
+}
+export function setVibrationDamping(_value) {
+    vibrationDamping = TryParseFloat(_value, vibrationDamping);
+}
+export function getVibrationDamping() {
+    return vibrationDamping;
+}
+export function setPerturbation(_value) {
+    perturbation = TryParseFloat(_value, perturbation);
+}
+export function getPerturbation() {
+    return perturbation;
 }

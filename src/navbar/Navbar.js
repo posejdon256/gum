@@ -13,79 +13,101 @@ export default class Navbar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            seenCube:  true,
-            seenDiagonal: false,
-            trayectory: false,
-            gravitation: false,
-            cubeSize: 1,
-            density: 1, //gęstość
-            displacement: 1, //wychylenie
-            speed: 1, //prędność kątowa
-            n: 100 //trayectory length
+            ShowControlPoints: true,
+            ShowFrame: true,
+            ShowCuboid: true,
+            ShowBezierCube: true,
+            ShowSolid: false,
+            rotateFrame: false,
+            velocityStart: 0,
+            mass: 64,
+            elasticity: 1,
+            elasticity2: 1,
+            vibrationDamping: 1,
+            perturbation: 1
         };
-        this.seenCube = this.seenCube.bind(this);
-        this.seenDagonal = this.seenDagonal.bind(this);
-        this.seenTrayectory = this.seenTrayectory.bind(this);
-        this.seenGravitation = this.seenGravitation.bind(this);
-        this.setSize = this.setSize.bind(this);
-        this.setDensity = this.setDensity.bind(this);
-        this.setDisplacement = this.setDisplacement.bind(this);
-        this.setSpeed = this.setSpeed.bind(this);
-        this.setN = this.setN.bind(this);
+        this._showFrame = this._showFrame.bind(this);
+        this._showControlPoints = this._showControlPoints.bind(this);
+        this._showCuboid = this._showCuboid.bind(this);
+        this._showBezierCube = this._showBezierCube.bind(this);
+        this._showSolid = this._showSolid.bind(this);
+        this._setRotateFrame = this._setRotateFrame.bind(this);
+        this._setVelocityStart = this._setVelocityStart.bind(this);
+        this._setControlPointsMass = this._setControlPointsMass.bind(this);
+        this._setElasticity = this._setElasticity.bind(this);
+        this._setElasticity2 = this._setElasticity2.bind(this);
+        this._setVibrationDamping = this._setVibrationDamping.bind(this);
+        this._setPerturbation = this._setPerturbation.bind(this);
     }
-    setN(e) {
+    _setPerturbation(event) {
         this.setState({
-            n: e.target.value
+            perturbation: event.target.value
         });
-        _setN(e.target.value);
     }
-    setSpeed(e) {
+    _setVibrationDamping(event) {
         this.setState({
-            speed: e.target.value
+            vibrationDamping: event.target.value
         });
-        _setSpeed(e.target.value);
     }
-    setDisplacement(e) {
+    _setElasticity2(event) {
         this.setState({
-            displacement: e.target.value
+            elasticity2: event.target.value
         });
-        _setDisplacement(e.target.value);
     }
-    setDensity(e) {
+    _setElasticity(event) {
         this.setState({
-            density: e.target.value
+            elasticity: event.target.value
         });
-        _setDensity(e.target.value);
     }
-    setSize(e) {
+    _setControlPointsMass(event) {
         this.setState({
-            cubeSize: e.target.value
+            mass: event.target.value
         });
-        _setSize(e.target.value);
     }
-    seenGravitation(e) {
+    _setVelocityStart(event) {
         this.setState({
-            gravitation: e.target.checked
+            velocityStart: event.target.value
         });
-        _seenGravitation();
     }
-    seenTrayectory(e) {
+    _setRotateFrame() {
         this.setState({
-            trayectory: e.target.checked
+            rotateFrame: !this.state.rotateFrame
         });
-        _seenTrayectory();
     }
-    seenCube(e) {
+    _showSolid() {
+        if(!this.state.ShowSolid) {
+            this.setState({
+                ShowBezierCube: false
+            })
+        }
         this.setState({
-            seenCube: e.target.checked
+            ShowSolid: !this.state.ShowSolid
         });
-        _seenCube();
     }
-    seenDagonal(e) {
+    _showBezierCube() {
+        if(!this.state.ShowBezierCube) {
+            this.setState({
+                ShowSolid: false
+            })
+        }
         this.setState({
-            seenDiagonal: e.target.checked
+            ShowBezierCube: !this.state.ShowBezierCube
         });
-        _seenDagonal();
+    }
+    _showCuboid() {
+        this.setState({
+            ShowCuboid: !this.state.ShowCuboid
+        });
+    }
+    _showControlPoints() {
+        this.setState({
+            ShowControlPoints: !this.state.ShowControlPoints
+        });
+    }
+    _showFrame() {
+        this.setState({
+            ShowFrame: !this.state.ShowFrame
+        });
     }
     render(){
         return(
@@ -95,61 +117,80 @@ export default class Navbar extends Component {
                     <FormGroup column>
                         <FormControlLabel control={
                                 <Switch
-                                checked={this.state.seenCube}
-                                onChange={this.seenCube}
+                                checked={this.state.ShowControlPoints}
+                                onChange={this._showControlPoints}
                                 value="seenCube"
-                                />} label="Cube" />
+                                />} label="Show control Points" />
                         <FormControlLabel control={
                                 <Switch
-                                checked={this.state.seenDiagonal}
+                                checked={this.state.ShowFrame}
                                 value="seenDiagonal"
-                                onChange={this.seenDagonal}
-                                />} label="Diagonal" />
+                                onChange={this._showFrame}
+                                />} label="Show frame" />
                         <FormControlLabel control={
                                 <Switch
-                                checked={this.state.trayectory}
+                                checked={this.state.ShowCuboid}
                                 value="trayectory"
-                                onChange={this.seenTrayectory}
-                                />} label="Trayectory" />
+                                onChange={this._showCuboid}
+                                />} label="Show cuboid" />
                         <FormControlLabel control={
                                 <Switch
-                                checked={this.state.gravitation}
-                                onChange={this.seenGravitation}
+                                checked={this.state.ShowBezierCube}
+                                onChange={this._showBezierCube}
                                 value="gravitation"
-                                />} label="Gravitation" />
+                                />} label="Show bezier cube" />
+                        <FormControlLabel control={
+                                <Switch
+                                checked={this.state.ShowSolid}
+                                onChange={this._showSolid}
+                                value="gravitation"
+                                />} label="Show deformed solid" />
+                        <FormControlLabel control={
+                                <Switch
+                                checked={this.state.rotateFrame}
+                                onChange={this._setRotateFrame}
+                                value="gravitation"
+                                />} label="Rotate frame" />
                     </FormGroup>
                     <TextField
-                        label="Cube size"
-                        value={this.state.cubeSize}
+                        label="Velocity on start"
+                        value={this.state.velocityStart}
                         margin="normal"
-                        onChange={this.setSize}
+                        onChange={this._setVelocityStart}
                         variant="outlined"
                     />
                     <TextField
-                        label="Cube densinity"
-                        value={this.state.density}
-                        onChange={this.setDensity}
-                        margin="normal"
-                        variant="outlined"
-                    />
-                    <TextField
-                        label="Cube displacement"
-                        value={this.state.displacement}
-                        onChange={this.setDisplacement}
+                        label="Control points mass"
+                        value={this.state.mass}
+                        onChange={this._setControlPointsMass}
                         margin="normal"
                         variant="outlined"
                     />
                     <TextField
-                        label="Angular velocity"
-                        onChange={this.setSpeed}
-                        value={this.state.speed}
+                        label="Elasticity"
+                        value={this.state.elasticity}
+                        onChange={this._setElasticity}
                         margin="normal"
                         variant="outlined"
                     />
                     <TextField
-                        label="Trayectory length"
-                        onChange={this.setN}
-                        value={this.state.n}
+                        label="Vibration Damping"
+                        onChange={this._setVibrationDamping}
+                        value={this.state.vibrationDamping}
+                        margin="normal"
+                        variant="outlined"
+                    />
+                    <TextField
+                        label="Elasticity 2"
+                        onChange={this._setElasticity2}
+                        value={this.state.elasticity2}
+                        margin="normal"
+                        variant="outlined"
+                    />
+                    <TextField
+                        label="Perturbation"
+                        onChange={this._setPerturbation}
+                        value={this.state.perturbation}
                         margin="normal"
                         variant="outlined"
                     />

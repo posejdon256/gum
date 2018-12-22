@@ -4,7 +4,7 @@ import { countNextStep } from "../../Physics/RungyKutta/RungyKutta";
 
 export function mainLoop(resolve, reject) {
 
-        countNextStep();
-        DrawCube();
-        DrawLines();
+        // countNextStep();
+        // DrawCube();
+        // DrawLines();
 }

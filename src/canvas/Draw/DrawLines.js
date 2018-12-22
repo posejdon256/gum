@@ -8,7 +8,6 @@ import {
 } from '../../OpenGL/InitOpenGL';
 import { TranslateMatrix } from '../TranslateMatrix/TranslateMatrix';
 import { getLinesVerticesTrayectory, getLinesIndicesGravitation, getLinesIndicesDiagonal, getLinesVerticesDiagonal, getLinesVerticesGraviatation, getLinesIndicesTrayectory } from './Lines';
-import { _getGravitation, _getDagonalSeen } from '../../datas/CollectAndShareDatas';
 
 export function DrawLines() {
     const gl = getglCtx();
@@ -28,25 +27,6 @@ export function DrawLines() {
     if(indices.length > 0) {
         addData(getLinesVerticesTrayectory(), getLinesIndicesTrayectory());
         TranslateMatrix(getProjectionMxLine(), getModelMxLine(), false);
-
-        //var buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, vb);
-        gl.drawArrays(gl.LINES, 0, indices.length);
-    }
-
-    if(_getGravitation()) {
-        indices = getLinesIndicesGravitation();
-        addData(getLinesVerticesGraviatation(), indices);
-        TranslateMatrix(getProjectionMxLine(), getModelMxLine(), false);
-
-        //var buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, vb);
-        gl.drawArrays(gl.LINES, 0, indices.length);
-    }
-    if(_getDagonalSeen()) {
-        indices = getLinesIndicesDiagonal();
-        addData(getLinesVerticesDiagonal(), indices);
-        TranslateMatrix(getProjectionMxLine(), getModelMxLine(), true);
 
         //var buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vb);
