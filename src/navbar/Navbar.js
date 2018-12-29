@@ -7,7 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
-import { _setN, _setSize, _setDisplacement, _setDensity, _seenTrayectory, _seenCube, _seenDagonal, _seenGravitation, _setSpeed } from '../datas/CollectAndShareDatas';
+import { _setN, _setSize, _setDisplacement, _setDensity, _seenTrayectory, _seenCube, _seenDagonal, _seenGravitation, _setSpeed, setPerturbation, setVibrationDamping, setElasticity, setElasticity2, setVelocityStart, setRotateFrame, setShowCuboid, setShowBezierCube, setShowSolid, setShowControlPoints, setShowFrame } from '../datas/CollectAndShareDatas';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -43,21 +43,25 @@ export default class Navbar extends Component {
         this.setState({
             perturbation: event.target.value
         });
+        setPerturbation(event.target.value);
     }
     _setVibrationDamping(event) {
         this.setState({
             vibrationDamping: event.target.value
         });
+        setVibrationDamping(event.target.value);
     }
     _setElasticity2(event) {
         this.setState({
             elasticity2: event.target.value
         });
+        setElasticity2(event.target.value);
     }
     _setElasticity(event) {
         this.setState({
             elasticity: event.target.value
         });
+        setElasticity(event.target.value);
     }
     _setControlPointsMass(event) {
         this.setState({
@@ -68,46 +72,55 @@ export default class Navbar extends Component {
         this.setState({
             velocityStart: event.target.value
         });
+        setVelocityStart(event.target.value);
     }
     _setRotateFrame() {
         this.setState({
             rotateFrame: !this.state.rotateFrame
         });
+        setRotateFrame();
     }
     _showSolid() {
         if(!this.state.ShowSolid) {
             this.setState({
                 ShowBezierCube: false
             })
+            setShowSolid(false);
         }
         this.setState({
             ShowSolid: !this.state.ShowSolid
         });
+        setShowSolid();
     }
     _showBezierCube() {
         if(!this.state.ShowBezierCube) {
             this.setState({
                 ShowSolid: false
             })
+            setShowBezierCube(false);
         }
         this.setState({
             ShowBezierCube: !this.state.ShowBezierCube
         });
+        setShowBezierCube();
     }
     _showCuboid() {
         this.setState({
             ShowCuboid: !this.state.ShowCuboid
         });
+        setShowCuboid();
     }
     _showControlPoints() {
         this.setState({
             ShowControlPoints: !this.state.ShowControlPoints
         });
+        setShowControlPoints();
     }
     _showFrame() {
         this.setState({
             ShowFrame: !this.state.ShowFrame
         });
+        setShowFrame();
     }
     render(){
         return(

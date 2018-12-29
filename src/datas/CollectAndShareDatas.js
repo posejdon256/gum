@@ -1,4 +1,6 @@
 import { TryParseFloat } from "../Helpers/Parsing";
+import { addBox, removeBox } from "../canvas/Objects/Box";
+import { addBezierCube } from "../canvas/Objects/Bezier";
 
 let ShowControlPoints= true,
     ShowFrame= true,
@@ -27,6 +29,11 @@ export function getShowFrame() {
 }
 export function setShowCuboid() {
     ShowCuboid = !ShowCuboid;
+    if(ShowCuboid) {
+        addBox();
+    } else {
+        removeBox();
+    }
 }
 export function getShowCuboid() {
     return ShowCuboid;
@@ -34,11 +41,22 @@ export function getShowCuboid() {
 export function setShowBezierCube() {
     ShowBezierCube = !ShowBezierCube;
 }
-export function getShowBezierBube() {
-    return ShowBezierCube;
+export function getShowBezierBube(value) {
+    if(value === false) {
+        ShowBezierCube = false;
+    } else {
+        ShowBezierCube = !ShowBezierCube;
+    }
+    if(ShowBezierCube) {
+        addBezierCube();
+    }
 }
-export function setShowSolid() {
-    ShowSolid = !ShowSolid;
+export function setShowSolid(value) {
+    if(value === false) {
+        ShowSolid = false;
+    } else {
+        ShowSolid = !ShowSolid;
+    }
 }
 export function getShowSolid() {
     return ShowSolid;
