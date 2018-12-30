@@ -1,6 +1,7 @@
 import { getCubePoints, removeBezier, addBezierCube, setCubePoints } from "../canvas/Objects/Bezier";
 import { getMass } from "./CollectAndShareDatas";
 import { getFrameCorners } from "../canvas/Objects/Frame";
+import { getMax } from "../canvas/Objects/Box";
 
 export function RungyKuttaStep() {
     removeBezier();
@@ -141,7 +142,7 @@ function oneStep(p, points) {
     const xPrim = SumPoints(p, MultiplyPoint(countDerivativeX(v0), h));
     const vPrim = SumPoints(v0, MultiplyPoint(countDerivativeV(xPrim, v0, points), h));
 
-    return {
+    return updateV({
         i: p.i,
         j: p.j,
         k: p.k,
@@ -149,8 +150,43 @@ function oneStep(p, points) {
         x: xPrim.x,
         y: xPrim.y,
         z: xPrim.z
-    }
+    });
 }
+function updateV(p) {
+    const _max = getMax();
+    const tlumienie = 0.3;
+    const x = p.x - 15;
+    const y = p.y - 15;
+    const z = p.z - 15;
+    if(x < -_max / 2 || x > _max / 2) {
+        p.v.x = -tlumienie * p.v.x;
+        if(x < -_max / 2) {
+            p.x ++;;
+        }
+        if(x > _max / 2) {
+            p.x --;
+        }
+    }
+    if(y < -_max / 2 || y > _max / 2) {
+        p.v.y = -tlumienie * p.v.y;
+        if(y < -_max / 2) {
+            p.y ++;;
+        }
+        if(y > _max / 2) {
+            p.y --;
+        }
+    }
+    if(z < -_max / 2 || z > _max / 2) {
+        p.v.z = -tlumienie * p.v.z;
+        if(z < -_max / 2) {
+            p.z ++;;
+        }
+        if(z > _max / 2) {
+            p.z --;
+        }
+    }
+    return p;
+} 
 function countCL(p1, p2) {
     let l0 = 10;
     let c = 35;
