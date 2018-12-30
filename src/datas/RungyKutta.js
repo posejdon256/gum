@@ -1,5 +1,6 @@
 import { getCubePoints, removeBezier, addBezierCube, setCubePoints } from "../canvas/Objects/Bezier";
 import { getMass } from "./CollectAndShareDatas";
+import { getFrameCorners } from "../canvas/Objects/Frame";
 
 export function RungyKuttaStep() {
     removeBezier();
@@ -31,8 +32,8 @@ export function RungyKuttaStep() {
 }
 function getF(p, points, v) {
 
-    const _k = 20;
-    const lepkosc = MultiplyPoint(v, -_k);
+    const _k = 4;
+    const lepkosc = MultiplyPoint(v,-_k);
 
     const i = p.i;
     const j = p.j;
@@ -117,6 +118,16 @@ function getF(p, points, v) {
         f = SumPoints(f, countCL(p, points[i + 1][j - 1][k - 1]));
     }
     f = SumPoints(f, lepkosc);
+    const framePoints = getFrameCorners();
+    for(let _i = 0; _i < 2; _i ++) {
+        for(let _j = 0; _j < 2; _j ++) {
+            for(let _k = 0; _k < 2; _k ++) {
+                if(p.i === framePoints[_i][_j][_k].i && p.j === framePoints[_i][_j][_k].j && p.k === framePoints[_i][_j][_k].k) {
+                    f = SumPoints(f, countCL(p, framePoints[_i][_j][_k]));
+                }
+            }
+        }
+    }
     f.i = p.i;
     f.j = p.j;
     f.k = p.k;
@@ -127,64 +138,39 @@ function oneStep(p, points) {
     const h = 0.01;
     const v0 = p.v;
 
-    const k1V = MultiplyPoint(countDerivativeV(v0), h);
-    const k1X = MultiplyPoint(countDerivativeP(p, k1V, points), h);
-
-    const k2V = MultiplyPoint(countDerivativeV(SumPoints(v0, MultiplyPoint(k1V, 1/2))), h);
-    const k2X= MultiplyPoint(countDerivativeP(SumPoints(p, MultiplyPoint(k1X, 1/2)), k2V, points), h);
-
-    const k3V = MultiplyPoint(countDerivativeV(SumPoints(v0, MultiplyPoint(k2V, 1/2))), h);
-    const k3X = MultiplyPoint(countDerivativeP(SumPoints(p, MultiplyPoint(k2X, 1/2)), k3V, points), h);
-
-    const k4V = MultiplyPoint(countDerivativeV(SumPoints(v0, k3V)), h);
-    const k4X = MultiplyPoint(countDerivativeP(SumPoints(p, k3X), k4V, points), h);
-
-    const k116V = MultiplyPoint(k1V, 1/6);
-    const k116X = MultiplyPoint(k1X, 1/6);
-
-    const k213V = MultiplyPoint(k2V, 1/3);
-    const k213X = MultiplyPoint(k2X, 1/3);
-
-    const k313V = MultiplyPoint(k3V, 1/3);
-    const k313X = MultiplyPoint(k3X, 1/3);
-
-    const k416V = MultiplyPoint(k4V, 1/6);
-    const k416X = MultiplyPoint(k4X, 1/6);
-
-    const newV = SumPoints(SumPoints(SumPoints(SumPoints(p, k116V),  k213V), k313V), k416V);
-    const newX = SumPoints(SumPoints(SumPoints(SumPoints(v0, k116X),  k213X), k313X), k416X);
+    const xPrim = SumPoints(p, MultiplyPoint(countDerivativeX(v0), h));
+    const vPrim = SumPoints(v0, MultiplyPoint(countDerivativeV(xPrim, v0, points), h));
 
     return {
         i: p.i,
         j: p.j,
         k: p.k,
-        v: newX,
-        x: newV.x,
-        y: newV.y,
-        z: newV.z
+        v: vPrim,
+        x: xPrim.x,
+        y: xPrim.y,
+        z: xPrim.z
     }
-
-
-    // if(p1.z > p2.z) {
-    //     ret.z = -ret.z;
-    // }
-    // if(p1.x > p2.x) {
-    //     ret.x = -ret.x;
-    // }
-    // if(p1.y > p2.y) {
-    //     ret.y = -ret.y;
-    // }
-    // if(Math.abs(diff.x) < 0.05 && Math.abs(diff.y) < 0.05 && Math.abs(diff.z) < 0.05) {
-    //     console.log(diff);
-    // }
-   // console.log(diff);
-    //return f;
 }
 function countCL(p1, p2) {
-    const l0 = 15;
-    const c = 10;
-    const l = vectorLength(DiffPoints(p2, p1)) - l0;
-    const n = normalize(DiffPoints(p2, p1));
+    let l0 = 10;
+    let c = 35;
+    const parLen = Math.abs(p1.i - p2.i) + Math.abs(p1.j - p2.j) + Math.abs(p1.k - p2.k);
+    if(parLen === 2) {
+        l0 = l0 * Math.sqrt(2);
+    }
+    if(parLen === 3) {
+        l0 = l0 * Math.sqrt(3);
+    }
+    if(parLen === 0) {
+        l0 = 0.01;
+        c = 70;
+    }
+    const diff = DiffPoints(p2, p1);
+    let l = vectorLength(DiffPoints(p2, p1)) - l0;
+    let n = normalize(DiffPoints(p2, p1));
+    if(diff.x === 0 && diff.y === 0 && diff.z === 0) {
+        n = diff;
+    }
     return MultiplyPoint(n, c*l);
 }
 function normalize(p) {
@@ -195,14 +181,6 @@ function normalize(p) {
     k: p.k,
     v: p.v
     };
-}
-function abs(p) {
-    return { x: p.x < 0 ? -p.x : p.x, y: p.y < 0 ? -p.y : p.y, z: p.z < 0 ? -p.z : p.z,
-        i: p.i,
-        j: p.j,
-        k: p.k,
-        v: p.v
-        };
 }
 function DiffPoints(p1, p2) {
     return {x: p1.x - p2.x, y: p1.y - p2.y, z: p1.z - p2.z,
@@ -228,10 +206,10 @@ function SumPoints(p1, p2) {
         v: p1.v
         };
 }
-export function countDerivativeV(v) {
+export function countDerivativeX(v) {
     return v;
 }
-export function countDerivativeP(p, v, points) {
+export function countDerivativeV(p, v, points) {
     const m = getMass() / 64;
     const f = getF(p, points, v);
     return  MultiplyPoint(f, 1/m);

@@ -8,6 +8,7 @@ import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import { _setN, _setSize, _setDisplacement, _setDensity, _seenTrayectory, _seenCube, _seenDagonal, _seenGravitation, _setSpeed, setPerturbation, setVibrationDamping, setElasticity, setElasticity2, setVelocityStart, setRotateFrame, setShowCuboid, setShowBezierCube, setShowSolid, setShowControlPoints, setShowFrame } from '../datas/CollectAndShareDatas';
+import { Button } from '@material-ui/core';
 
 export default class Navbar extends Component {
     constructor(props) {
@@ -207,6 +208,7 @@ export default class Navbar extends Component {
                         margin="normal"
                         variant="outlined"
                     />
+                    <Button>Reset</Button>
                     </Paper>
                 </MuiThemeProvider>
             </div>

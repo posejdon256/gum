@@ -10,6 +10,7 @@ import KeyboardCenter from './KeybordCenter/KeyboardCenter';
 import MouseCenter from './MouseCenter/MouseCenter';
 import { addBox } from './Objects/Box';
 import { addBezierCube, prepareCubePoints } from './Objects/Bezier';
+import { addFrameToScene } from './Objects/Frame';
 
 export default class Canvas extends Component {
     constructor(props) {
@@ -43,6 +44,7 @@ export default class Canvas extends Component {
        prepareCubePoints();
        addBox();
        addBezierCube();
+       addFrameToScene();
        // generateArm(this.refs.can, 0);
        // generateArm(this.refs.can2, 1);
         _animate();

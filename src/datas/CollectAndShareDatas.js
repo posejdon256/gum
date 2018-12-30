@@ -1,6 +1,7 @@
 import { TryParseFloat } from "../Helpers/Parsing";
 import { addBox, removeBox } from "../canvas/Objects/Box";
 import { addBezierCube } from "../canvas/Objects/Bezier";
+import { addFrameToScene, removeFrame } from "../canvas/Objects/Frame";
 
 let ShowControlPoints= true,
     ShowFrame= true,
@@ -63,6 +64,11 @@ export function getShowSolid() {
 }
 export function setRotateFrame() {
     rotateFrame = !rotateFrame;
+    if(rotateFrame) {
+        addFrameToScene();
+    } else {
+        removeFrame();
+    }
 }
 export function getRotationFrame() {
     return rotateFrame;

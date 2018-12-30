@@ -8,17 +8,14 @@ export function prepareCubePoints() {
            points[i].push([]);
             for(let k = 0; k < 4; k ++) {
                 points[i][j].push({
-                    // x: (Math.random() * 100) % 40,
-                    // y: (Math.random() * 100) % 40,
-                    // z: (Math.random() * 100) % 40
                     v: {
                         x: 0,
                         y: 0,
                         z: 0
                     },
-                    x: i * 10,
-                    y: j * 10,
-                    z: k * 10,
+                     x: i * 10,
+                     y: j * 10,
+                     z: k * 10,
                     i: i,
                     j: j,
                     k: k

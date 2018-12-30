@@ -1,4 +1,6 @@
 import Translate, { getZooming } from "../Translation/Translation";
+import { getShowFrame } from "../../datas/CollectAndShareDatas";
+import { moveFrame } from "../Objects/Frame";
 
 
 let front = 0;
@@ -14,10 +16,17 @@ function setIntervalForMoving(){
             if(_actualFront > 1.5 && front !== 0.99)  {
                 front = 0;
             }
-            const trasnlationObject = {
+            let trasnlationObject = {
                 front: front,
                 left: left,
                 top: top
+            }
+            if(getShowFrame()) {
+                trasnlationObject.front = trasnlationObject.front === 0.99 ? -1 : trasnlationObject.front;
+                trasnlationObject.left *=100;
+                trasnlationObject.top *=100;
+                moveFrame(trasnlationObject);
+                return;
             }
             Translate(trasnlationObject);
             Translate(trasnlationObject);
