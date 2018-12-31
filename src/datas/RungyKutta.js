@@ -1,10 +1,9 @@
-import { getCubePoints, removeBezier, addBezierCube, setCubePoints } from "../canvas/Objects/Bezier";
-import { getMass } from "./CollectAndShareDatas";
+import { getCubePoints, removeBezier, addBezierCube, setCubePoints, addNiceBezierCube, updateCenter } from "../canvas/Objects/Bezier";
+import { getMass, getShowSolid, getShowCuboid, getElastity, getElastity2, getPerturbation } from "./CollectAndShareDatas";
 import { getFrameCorners } from "../canvas/Objects/Frame";
 import { getMax } from "../canvas/Objects/Box";
 
 export function RungyKuttaStep() {
-    removeBezier();
     let t = 0;
     const points = getCubePoints();
     const pointsCopy = [];
@@ -29,7 +28,7 @@ export function RungyKuttaStep() {
         }
     }
     setCubePoints(pointsCopy);
-    addBezierCube();
+    updateCenter(); 
 }
 function getF(p, points, v) {
 
@@ -141,8 +140,18 @@ function oneStep(p, points) {
 
     const xPrim = SumPoints(p, MultiplyPoint(countDerivativeX(v0), h));
     const vPrim = SumPoints(v0, MultiplyPoint(countDerivativeV(xPrim, v0, points), h));
-
-    return updateV({
+    if(getShowCuboid()) {
+        return updateV({
+            i: p.i,
+            j: p.j,
+            k: p.k,
+            v: vPrim,
+            x: xPrim.x,
+            y: xPrim.y,
+            z: xPrim.z
+        });
+    }
+    return {
         i: p.i,
         j: p.j,
         k: p.k,
@@ -150,7 +159,7 @@ function oneStep(p, points) {
         x: xPrim.x,
         y: xPrim.y,
         z: xPrim.z
-    });
+    };
 }
 function updateV(p) {
     const _max = getMax();
@@ -189,7 +198,7 @@ function updateV(p) {
 } 
 function countCL(p1, p2) {
     let l0 = 10;
-    let c = 35;
+    let c = getElastity();
     const parLen = Math.abs(p1.i - p2.i) + Math.abs(p1.j - p2.j) + Math.abs(p1.k - p2.k);
     if(parLen === 2) {
         l0 = l0 * Math.sqrt(2);
@@ -199,7 +208,7 @@ function countCL(p1, p2) {
     }
     if(parLen === 0) {
         l0 = 0.01;
-        c = 70;
+        c = getElastity2();
     }
     const diff = DiffPoints(p2, p1);
     let l = vectorLength(DiffPoints(p2, p1)) - l0;
@@ -226,7 +235,7 @@ function DiffPoints(p1, p2) {
         v: p2.v
         };
 }
-function MultiplyPoint(p1, k) {
+export function MultiplyPoint(p1, k) {
     return { x: p1.x * k, y: p1.y * k, z: p1.z * k,
         i: p1.i,
         j: p1.j,
@@ -234,7 +243,7 @@ function MultiplyPoint(p1, k) {
         v: p1.v
         };
 }
-function SumPoints(p1, p2) {
+export function SumPoints(p1, p2) {
     return {x: p1.x + p2.x, y: p1.y + p2.y, z: p1.z + p2.z,
         i: p1.i,
         j: p1.j,
@@ -248,7 +257,8 @@ export function countDerivativeX(v) {
 export function countDerivativeV(p, v, points) {
     const m = getMass() / 64;
     const f = getF(p, points, v);
-    return  MultiplyPoint(f, 1/m);
+    const perturbation = {x: getPerturbation(), y: getPerturbation(), z: getPerturbation()};
+    return  SumPoints(MultiplyPoint(f, 1/m), perturbation);
 }
 function vectorLength(vec1) {
     return Math.sqrt(Math.pow(vec1.x, 2) + Math.pow(vec1.y, 2) + Math.pow(vec1.z, 2));

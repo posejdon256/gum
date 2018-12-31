@@ -86,7 +86,7 @@ export default class Navbar extends Component {
             this.setState({
                 ShowBezierCube: false
             })
-            setShowSolid(false);
+            setShowBezierCube(false);
         }
         this.setState({
             ShowSolid: !this.state.ShowSolid
@@ -98,7 +98,7 @@ export default class Navbar extends Component {
             this.setState({
                 ShowSolid: false
             })
-            setShowBezierCube(false);
+            setShowSolid(false);
         }
         this.setState({
             ShowBezierCube: !this.state.ShowBezierCube

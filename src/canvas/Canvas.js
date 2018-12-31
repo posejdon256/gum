@@ -3,14 +3,15 @@ import './Canvas.scss';
 import Paper from '@material-ui/core/Paper';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import React, { Component } from 'react';
-import ThreeLib from 'three-js';
+import * as THREE from 'three';
 
 import { setTHREE, _animate, setRenderer, setScene, setCamera } from './Animation/AnimationFrame';
 import KeyboardCenter from './KeybordCenter/KeyboardCenter';
 import MouseCenter from './MouseCenter/MouseCenter';
 import { addBox } from './Objects/Box';
-import { addBezierCube, prepareCubePoints } from './Objects/Bezier';
+import { addBezierCube, prepareCubePoints, addNiceBezierCube, LoadOBJ } from './Objects/Bezier';
 import { addFrameToScene } from './Objects/Frame';
+import { getShowSolid } from '../datas/CollectAndShareDatas';
 
 export default class Canvas extends Component {
     constructor(props) {
@@ -21,7 +22,6 @@ export default class Canvas extends Component {
     componentDidMount() {
 
        // initWebGL(this.refs.can1);
-       const THREE = ThreeLib();
        const container = this.refs.can;
        setTHREE(THREE);
        const WIDTH = 1400;
@@ -39,12 +39,22 @@ export default class Canvas extends Component {
        camera.lookAt(0, 0, 0);
        container.appendChild(renderer.domElement);
        setRenderer(renderer);
+       LoadOBJ();
        setScene(scene);
        setCamera(camera);
        prepareCubePoints();
        addBox();
        addBezierCube();
+       addNiceBezierCube();
        addFrameToScene();
+        const spotLight = new THREE.SpotLight(0xffffff, 1, 100);
+        spotLight.position.set(50, 50, 50);
+        spotLight.castShadow = true;
+        spotLight.intensity = 1;
+        scene.add(spotLight);
+        const ambient = new THREE.AmbientLight(0xaaaaaa);
+        scene.add(ambient);
+
        // generateArm(this.refs.can, 0);
        // generateArm(this.refs.can2, 1);
         _animate();

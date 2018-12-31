@@ -6,7 +6,7 @@ import { moveFrame } from "../Objects/Frame";
 let front = 0;
 let left = 0;
 let top = 0;
-let step = 0.003;
+let step = 0.1;
 let interval;
 
 function setIntervalForMoving(){
@@ -23,8 +23,8 @@ function setIntervalForMoving(){
             }
             if(getShowFrame()) {
                 trasnlationObject.front = trasnlationObject.front === 0.99 ? -1 : trasnlationObject.front;
-                trasnlationObject.left *=100;
-                trasnlationObject.top *=100;
+                trasnlationObject.left *=3;
+                trasnlationObject.top *=3;
                 moveFrame(trasnlationObject);
                 return;
             }

@@ -1,6 +1,6 @@
 import { TryParseFloat } from "../Helpers/Parsing";
 import { addBox, removeBox } from "../canvas/Objects/Box";
-import { addBezierCube } from "../canvas/Objects/Bezier";
+import { removeCenter, addBezierCube, addNiceBezierCube, getCubePoints } from "../canvas/Objects/Bezier";
 import { addFrameToScene, removeFrame } from "../canvas/Objects/Frame";
 
 let ShowControlPoints= true,
@@ -17,12 +17,14 @@ let ShowControlPoints= true,
     perturbation= 1;
 
 export function setShowControlPoints() {
+    removeCenter();
     ShowControlPoints = !ShowControlPoints;
 }
 export function getShowControlPoints() {
     return ShowControlPoints;
 }
 export function setShowFrame() {
+    removeCenter();
     ShowFrame = !ShowFrame;
 }
 export function getShowFrame() {
@@ -39,20 +41,22 @@ export function setShowCuboid() {
 export function getShowCuboid() {
     return ShowCuboid;
 }
-export function setShowBezierCube() {
-    ShowBezierCube = !ShowBezierCube;
+export function getShowBezierBube() {
+    return ShowBezierCube;
 }
-export function getShowBezierBube(value) {
+export function setShowBezierCube(value) {
+    removeCenter();
     if(value === false) {
         ShowBezierCube = false;
     } else {
+        if(!ShowBezierCube) {
+            addNiceBezierCube();
+        }
         ShowBezierCube = !ShowBezierCube;
-    }
-    if(ShowBezierCube) {
-        addBezierCube();
     }
 }
 export function setShowSolid(value) {
+    removeCenter();
     if(value === false) {
         ShowSolid = false;
     } else {
@@ -75,6 +79,16 @@ export function getRotationFrame() {
 }
 export function setVelocityStart(_value) {
     velocityStart = TryParseFloat(_value, velocityStart);
+    const points = getCubePoints();
+    for(let i = 0; i < 4; i ++) {
+       for(let j = 0; j < 4; j ++) {
+            for(let k = 0; k < 4; k ++) {
+                points[i][j][k].v.x = velocityStart;
+                points[i][j][k].v.y = velocityStart;
+                points[i][j][k].v.z = velocityStart;
+            }
+        }
+    }
 }
 export function getVelocityStart() {
     return velocityStart;
